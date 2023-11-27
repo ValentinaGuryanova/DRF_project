@@ -29,6 +29,8 @@ class Lesson(models.Model):
     video_link = models.URLField(blank=True)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='курс')
 
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, verbose_name='владелец урока', **NULLABLE)
+
     def __str__(self):
         return f'{self.title}'
 
@@ -53,6 +55,9 @@ class Payment(models.Model):
     payment_date = models.DateField(default=timezone.now, verbose_name='дата оплаты')
     amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='сумма оплаты')
     pay_type = models.CharField(choices=PAY_TYPES, default=PAY_CASH, max_length=100, verbose_name='способ оплаты')
+
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, verbose_name='владелец платежа',
+                              **NULLABLE)
 
     def __str__(self):
         if self.payment_date:
