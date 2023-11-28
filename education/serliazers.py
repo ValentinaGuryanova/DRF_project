@@ -17,9 +17,18 @@ class PaymentCreateSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class LessonSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Lesson
+        # fields = '__all__'
+        fields = ('id', 'title', 'description', 'video_link',)
+
+
 class CourseSerializer(serializers.ModelSerializer):
     lesson_count = serializers.SerializerMethodField()
     lessons_of_course = serializers.SerializerMethodField
+    lessons = LessonSerializer(source='lesson_set', read_only=True, many=True)
 
     def get_lesson_count(self, obj):
         return obj.lesson.count()
@@ -30,14 +39,9 @@ class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         # fields = '__all__'
-        fields = ('id', 'title', 'lesson_count',)
+        fields = ('id', 'title', 'lesson_count', 'lessons')
 
 
-class LessonSerializer(serializers.ModelSerializer):
 
-    class Meta:
-        model = Lesson
-        # fields = '__all__'
-        fields = ('id', 'title', 'description', 'video_link',)
 
 
