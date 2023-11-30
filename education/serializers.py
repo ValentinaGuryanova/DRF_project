@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from education.models import Course, Lesson, Payment
+from education.validators import URLValidator
 
 
 class PaymentSerializer(serializers.ModelSerializer):
@@ -24,10 +25,14 @@ class LessonSerializer(serializers.ModelSerializer):
         # fields = '__all__'
         fields = ('id', 'title', 'description', 'video_link',)
 
+        validators = [
+            URLValidator(field_name='video'),
+        ]
+
 
 class CourseSerializer(serializers.ModelSerializer):
-    lesson_count = serializers.SerializerMethodField()
-    lessons_of_course = serializers.SerializerMethodField
+    lesson_count = serializers.SerializerMethodField(read_only=True)
+    lessons_of_course = serializers.SerializerMethodField(read_only=True)
     lessons = LessonSerializer(source='lesson_set', read_only=True, many=True)
 
     def get_lesson_count(self, obj):
