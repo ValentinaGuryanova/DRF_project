@@ -47,6 +47,3 @@ class CourseSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'lesson_count', 'lessons')
 
 
-
-
-
