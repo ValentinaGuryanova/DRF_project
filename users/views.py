@@ -10,3 +10,15 @@ class SubscriptionCreateAPIView(CreateAPIView):
 
 class SubscriptionDestroyAPIView(DestroyAPIView):
     queryset = Subscription.objects.all()
+=======
+
+from users.models import Subscription
+from users.serializers import SubscriptionSerializer
+
+
+class SubscriptionCreateAPIView(CreateAPIView):
+    serializer_class = SubscriptionSerializer
+
+
+class SubscriptionDestroyAPIView(DestroyAPIView):
+    queryset = Subscription.objects.all()
