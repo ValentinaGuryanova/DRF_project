@@ -1,3 +1,6 @@
+from datetime import datetime, timedelta
+
+import pytz
 import stripe
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, generics
@@ -5,6 +8,9 @@ from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from stripe.http_client import requests
+
+import education
+
 from education.models import Course, Lesson, Payment
 from education.paginators import ListPaginator
 from education.permissions import IsModerator, IsOwner
@@ -37,7 +43,7 @@ class LessonCreateAPIView(generics.CreateAPIView):
         new_lesson = serializer.save()
         new_lesson.owner = self.request.user
         new_lesson.save()
-
+        education.send_mail.delay(new_lesson.course_id)
 
 class LessonListAPIView(generics.ListAPIView):
     """ Просмотр списка всех уроков """
@@ -63,6 +69,18 @@ class LessonUpdateAPIView(generics.UpdateAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
     permission_classes = [AllowAny, IsModerator | IsOwner]
+
+    def perform_update(self, serializer):
+        changed_lesson = serializer.save()
+        date_time_now = datetime.now()
+        moscow_timezone = pytz.timezone('Europe/Moscow')
+        date_now = date_time_now.astimezone(moscow_timezone)
+        if changed_lesson.lesson_datetime_changing:
+            lesson_last_change_date = changed_lesson.lesson_datetime_changing.astimezone(moscow_timezone)
+            if abs(date_now - lesson_last_change_date) > timedelta(hours=4):
+                education.send_mail.delay(changed_lesson.course_id)
+        changed_lesson.lesson_datetime_changing = date_now
+        changed_lesson.save()
 
 
 class LessonDestroyAPIView(generics.DestroyAPIView):
