@@ -124,12 +124,12 @@ https://stripe.com/docs/terminal/references/testing#standard-test-cards
 
 ## Задачи
 
-Описан Dockerfile для запуска контейнера с проектом.
-Обернут в Docker Compose Django-проект с БД PostgreSQL.
-Дописаны в docker-compose.yaml работу с Redis.
-Дописаны в docker-compose.yaml работу с Celery.
+- Описан Dockerfile для запуска контейнера с проектом.
+- Обернут в Docker Compose Django-проект с БД PostgreSQL.
+- Дописаны в docker-compose.yaml работу с Redis.
+- Дописаны в docker-compose.yaml работу с Celery.
 
 ## Команды
 
-Собрать образ командой docker-compose build
-Запустить контейнеры командой docker-compose up
+- Собрать образ командой docker-compose build
+- Запустить контейнеры командой docker-compose up
