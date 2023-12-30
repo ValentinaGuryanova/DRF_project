@@ -128,3 +128,4 @@ class LessonTestCase(APITestCase):
 
     def tearDown(self) -> None:
         self.lesson.delete()
+
